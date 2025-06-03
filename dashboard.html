@@ -22,10 +22,70 @@
   <body>
     <iframe
       id="gameFrame"
-      src="http://localhost:3002/more/"
+      src="http://localhost:3002/products/gaming/more?apiKey=gal-123-api-pub"
       style="width: 100%; height: 100%; border: none"
       allow="fullscreen; autoplay; clipboard-write"
       sandbox="allow-scripts allow-same-origin allow-top-navigation"
     ></iframe>
   </body>
 </html>
+
+<script>
+  const iframe = document.getElementById("gameFrame");
+
+  const payload = {
+    type: "SET_USER_DATA",
+    payload: {
+      userName: "JohnDoe",
+      phoneNumber: "1234567890",
+      userId: "idX-shajjowoalskfhsjk",
+      balance: 5000,
+    },
+  };
+
+  const gamePayload = {
+    type: "SET_GAME_DATA",
+    payload: {
+      jackpotAmount: 1000000,
+      minStake: 50,
+      maxStake: 10000,
+      allowAutoSpin: false,
+      autoSpinRounds: 20,
+    },
+  };
+
+  const returnUrl = {
+    type: "SET_RETURN_URL",
+    payload: {
+      returnUrl: "http://localhost:3000/dashboard.html",
+    },
+  };
+
+  iframe.onload = () => {
+    // When iframe is first loaded, send all messages
+    iframe.contentWindow.postMessage(payload, "*");
+    iframe.contentWindow.postMessage(gamePayload, "*");
+    iframe.contentWindow.postMessage(returnUrl, "*");
+  };
+
+  // Also respond when the iframe requests data (good for client-side routing)
+  window.addEventListener("message", (event) => {
+    if (event.data?.type === "REQUEST_INITIAL_DATA") {
+      iframe.contentWindow.postMessage(payload, "*");
+      iframe.contentWindow.postMessage(gamePayload, "*");
+      iframe.contentWindow.postMessage(returnUrl, "*");
+    }
+
+    if (event.data?.type === "GAME_RESULT") {
+      console.log("Game result:", event.data.payload);
+    }
+  });
+
+  window.addEventListener("message", (event) => {
+    const { type, payload } = event.data || {};
+    if (type === "NAVIGATE_IFRAME" && payload?.url) {
+      const iframe = document.getElementById("gameFrame");
+      iframe.src = payload.url;
+    }
+  });
+</script>
