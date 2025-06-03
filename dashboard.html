@@ -36,8 +36,6 @@
   const payload = {
     type: "SET_USER_DATA",
     payload: {
-      userName: "JohnDoe",
-      phoneNumber: "1234567890",
       userId: "idX-shajjowoalskfhsjk",
       balance: 5000,
     },
@@ -46,11 +44,14 @@
   const gamePayload = {
     type: "SET_GAME_DATA",
     payload: {
-      jackpotAmount: 1000000,
+      jackpotAmount: 100000,
       minStake: 50,
       maxStake: 10000,
-      allowAutoSpin: false,
+      allowAutoSpin: true,
       autoSpinRounds: 20,
+      jackpotDisplay: false,
+      allowJackpotIncrement: false,
+      jackpotIncrementValue: 10,
     },
   };
 
